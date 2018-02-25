@@ -206,8 +206,8 @@ app.get('/search/:keyword', function(req, res) {
               // centerBelowPlus
                 // btfResults
                   // s-result-item
-            var  amazonJsonArray  =  amazonJson.split("&&&");
-            console.log("amazonJson - centerBelowPlus: ",amazonJsonArray[12]);
+            // var  amazonJsonArray  =  amazonJson.split("&&&");
+            // console.log("amazonJson - centerBelowPlus: ",amazonJsonArray[12]);
 
             // for (var i = 0; i < amazonJsonArray.length; i++) {
             //   console.log("amazonJson - i : ",i,amazonJsonArray[i]);
@@ -219,7 +219,7 @@ app.get('/search/:keyword', function(req, res) {
       }
 
       function getMin(data) {
-        return data.reduce((min, p) => p.productPrice < min ? p.productPrice : min, data[0].productPrice);
+        return data.reduce((min, p) => p.productPrice < min ? p.productPrice : min, data[0].productPrice?data[0].productPrice:0);
       }	
 
       function getIndex(data,minPrice) {
@@ -230,24 +230,24 @@ app.get('/search/:keyword', function(req, res) {
       function camputeData(cdCamputeData) {
         var comData = '\n -----MIN PRICE BY PRODUCT-----'+
                       '\n ---Flipkart---'+
-                      ',\n Product Name: '+flipkartData[getIndex(flipkartData,getMin(flipkartData))]['productName']+
-                      ',\n Product Price: '+flipkartData[getIndex(flipkartData,getMin(flipkartData))]['productPrice']+
-                      ',\n Product URL: '+flipkartData[getIndex(flipkartData,getMin(flipkartData))]['productURL']+
+                      ',\n Product Name: '+flipkartData.length>0?flipkartData[getIndex(flipkartData,getMin(flipkartData))]['productName']:'Not In Flipkart'+
+                      ',\n Product Price: '+flipkartData.length>0?flipkartData[getIndex(flipkartData,getMin(flipkartData))]['productPrice']:'Not In Flipkart'+
+                      ',\n Product URL: '+flipkartData.length>0?flipkartData[getIndex(flipkartData,getMin(flipkartData))]['productURL']:'Not In Flipkart'+
                       '\n ---Snapdeal---'+
-                      ',\n Product Name: '+snapdealData[getIndex(snapdealData,getMin(snapdealData))]['productName']+
-                      ',\n Product Price: '+snapdealData[getIndex(snapdealData,getMin(snapdealData))]['productPrice']+
-                      ',\n Product Url: '+snapdealData[getIndex(snapdealData,getMin(snapdealData))]['productURL']+
+                      ',\n Product Name: '+snapdealData.length>0?snapdealData[getIndex(snapdealData,getMin(snapdealData))]['productName']:'Not In Snapdeal'+
+                      ',\n Product Price: '+snapdealData.length>0?snapdealData[getIndex(snapdealData,getMin(snapdealData))]['productPrice']:'Not In Snapdeal'+
+                      ',\n Product Url: '+snapdealData.length>0?snapdealData[getIndex(snapdealData,getMin(snapdealData))]['productURL']:'Not In Snapdeal'+
                       '\n ---Paytm---'+
-                      ',\n Product Name: '+paytmData[getIndex(paytmData,getMin(paytmData))]['productName']+
-                      ',\n Product Price: '+paytmData[getIndex(paytmData,getMin(paytmData))]['productPrice']+
-                      ',\n Product Url: '+paytmData[getIndex(paytmData,getMin(paytmData))]['productURL'];
+                      ',\n Product Name: '+paytmData.length>0?paytmData[getIndex(paytmData,getMin(paytmData))]['productName']:'Not In Paytm'+
+                      ',\n Product Price: '+paytmData.length>0?paytmData[getIndex(paytmData,getMin(paytmData))]['productPrice']:'Not In Paytm'+
+                      ',\n Product Url: '+paytmData.length>0?paytmData[getIndex(paytmData,getMin(paytmData))]['productURL']:'Not In Paytm';
 
         fs.writeFile('data/camputeData.txt', comData.toString(), function (err) {
           if (err) throw err;
           console.log('camputeData.csv saved!');
         });
 
-        cdCamputeData(null,{'flipkart min price':getMin(flipkartData),'snapdeal min price':getMin(snapdealData),'Paytm min price':getMin(paytmData)});
+        cdCamputeData(null,{'flipkart min price':flipkartData.length>0?getMin(flipkartData):'0','snapdeal min price':snapdealData.length>0?getMin(snapdealData):'0','Paytm min price':paytmData.length>0?getMin(paytmData):'0'});
       }
 
 
